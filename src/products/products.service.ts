@@ -17,8 +17,17 @@ export class ProductsService {
     return this.productRepository.save(newProduct);
   }
 
-  findAll() {
-    return this.productRepository.find();
+  findAll(limit: number, page: number) {
+    if(!limit || !page)
+    {
+      return this.productRepository.find();
+    }
+    const dataShown = (page - 1) * limit;
+    
+    return this.productRepository.find({
+      take: limit,
+      skip: dataShown,
+    });
   }
 
   async findOne(id: string) {
