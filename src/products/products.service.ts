@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
@@ -30,11 +30,25 @@ export class ProductsService {
     return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    const product = await this.productRepository.preload({
+      id: id,
+      ... updateProductDto,
+    })
+    if(!product){
+      throw new NotFoundException('product not found');
+    }
+
+    return this.productRepository.save(product);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    const result = await this.productRepository.delete(id);
+
+    if(result.affected === 0)
+    {
+      throw new NotFoundException(`Product #${id} Not Found`);
+    }
+    return {message: `Product #${id} has been deleted`};  
   }
 }
