@@ -1,7 +1,21 @@
-export class CreateProductDto {
-    name: string;
-    price: number;
-    quantity: number;
-    description: string;
+import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
 
+export class CreateProductDto {
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @IsNumber()
+    @IsPositive()
+    @IsNotEmpty()       
+    price: number;
+
+    @IsNumber()
+    @IsPositive()
+    @IsNotEmpty()       
+    quantity: number;
+
+    @IsString()
+    @IsOptional()     
+    description: string;
 }
