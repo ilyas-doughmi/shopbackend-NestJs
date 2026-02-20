@@ -12,7 +12,9 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
   ){}
   create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+    const newProduct = this.productRepository.create(createProductDto);
+
+    return this.productRepository.save(newProduct);
   }
 
   findAll() {
